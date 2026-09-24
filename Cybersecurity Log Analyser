@@ -1,0 +1,69 @@
+from collections import Counter
+
+logs = [
+    "LOGIN user=alex status=success",
+    "LOGIN user=admin status=failed",
+    "LOGIN user=admin status=failed",
+    "LOGIN user=admin status=failed",
+    "LOGIN user=alex status=success",
+    "LOGIN user=james status=failed",
+    "LOGIN user=sarah status=success"
+]
+
+total = 0
+successful = 0
+failed = 0
+
+failed_users = Counter()
+
+for log in logs:
+
+    if "LOGIN" in log:
+        total += 1
+
+    if "status=success" in log:
+        successful += 1
+
+    if "status=failed" in log:
+        failed += 1
+
+        words = log.split()
+
+        for word in words:
+            if word.startswith("user="):
+                username = word[5:]
+                failed_users[username] += 1
+
+
+print()
+print("==============================")
+print("   CYBERSECURITY LOG REPORT")
+print("==============================")
+
+print("Total logins:", total)
+print("Successful:", successful)
+print("Failed:", failed)
+
+print()
+print("Failed login attempts:")
+print("------------------------------")
+
+for username, attempts in failed_users.items():
+    print(username, ":", attempts)
+
+print()
+print("Suspicious activity:")
+print("------------------------------")
+
+found_suspicious = False
+
+for username, attempts in failed_users.items():
+
+    if attempts >= 3:
+        print("WARNING:", username, "has", attempts, "failed attempts")
+        found_suspicious = True
+
+if not found_suspicious:
+    print("No suspicious activity detected.")
+
+print("==============================")
